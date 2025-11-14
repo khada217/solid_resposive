@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - ModernFlex</title>
+    <meta name="description" content="Explore our comprehensive range of digital products and solutions designed for modern businesses.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
+    
+    <!-- ECharts for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Playfair Display', 'serif'],
+                        'body': ['Inter', 'sans-serif'],
+                        'mono': ['Space Mono', 'monospace']
+                    },
+                    colors: {
+                        'sage': '#8FBC8F',
+                        'terracotta': '#D4A574',
+                        'charcoal': '#2C2C2C',
+                        'warm-white': '#FAFAFA'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #8FBC8F 0%, #D4A574 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .filter-sidebar {
+            background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+        }
+        
+        .price-range-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
+            outline: none;
+        }
+        
+        .price-range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #8FBC8F;
+            cursor: pointer;
+        }
+        
+        .price-range-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #8FBC8F;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .search-input {
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(143, 188, 143, 0.1);
+            border-color: #8FBC8F;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            z-index: 1;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .sort-dropdown {
+            transition: all 0.3s ease;
+        }
+        
+        .sort-dropdown.active {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="font-body bg-warm-white text-charcoal">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sage to-terracotta rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <span class="ml-3 font-display font-bold text-xl">ModernFlex</span>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-sage transition-colors">Home</a>
+                    <a href="products.html" class="text-sage font-medium border-b-2 border-sage pb-1">Products</a>
+                    <a href="services.html" class="text-gray-600 hover:text-sage transition-colors">Services</a>
+                    <a href="about.html" class="text-gray-600 hover:text-sage transition-colors">About</a>
+                    <a href="contact.html" class="text-gray-600 hover:text-sage transition-colors">Contact</a>
+                    <div class="relative">
+                        <button class="bg-sage text-white px-4 py-2 rounded-lg font-medium hover:bg-sage/90 transition-colors">
+                            Cart
+                        </button>
+                        <span class="cart-badge">3</span>
+                    </div>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden menu-toggle p-2">
+                    <div class="w-6 h-6 flex flex-col justify-center items-center">
+                        <span class="w-4 h-0.5 bg-charcoal transition-all"></span>
+                        <span class="w-4 h-0.5 bg-charcoal mt-1 transition-all"></span>
+                        <span class="w-4 h-0.5 bg-charcoal mt-1 transition-all"></span>
+                    </div>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu md:hidden bg-white border-t border-gray-100 hidden">
+            <div class="px-4 py-4 space-y-3">
+                <a href="index.html" class="block text-gray-600 hover:text-sage transition-colors">Home</a>
+                <a href="products.html" class="block text-sage font-medium">Products</a>
+                <a href="services.html" class="block text-gray-600 hover:text-sage transition-colors">Services</a>
+                <a href="about.html" class="block text-gray-600 hover:text-sage transition-colors">About</a>
+                <a href="contact.html" class="block text-gray-600 hover:text-sage transition-colors">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 bg-gradient-to-br from-sage/10 to-terracotta/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="font-display text-5xl md:text-7xl font-black mb-6">
+                    Our <span class="gradient-text">Products</span>
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                    Discover our comprehensive range of digital solutions designed to elevate your business and enhance your online presence.
+                </p>
+                
+                <!-- Search Bar -->
+                <div class="max-w-md mx-auto relative">
+                    <input type="text" id="product-search" class="search-input w-full px-6 py-4 rounded-full border-2 border-gray-200 focus:border-sage outline-none text-lg" placeholder="Search products...">
+                    <button class="absolute right-2 top-2 bg-sage text-white p-2 rounded-full hover:bg-sage/90 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Filter Sidebar -->
+                <div class="lg:w-1/4">
+                    <div class="filter-sidebar rounded-2xl p-6 sticky top-24">
+                        <h3 class="font-display text-2xl font-bold mb-6">Filters</h3>
+                        
+                        <!-- Categories -->
+                        <div class="mb-8">
+                            <h4 class="font-semibold mb-4">Categories</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3" value="all" checked>
+                                    <span>All Products</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3" value="web">
+                                    <span>Web Design</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3" value="mobile">
+                                    <span>Mobile Apps</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3" value="branding">
+                                    <span>Branding</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3" value="marketing">
+                                    <span>Marketing</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Price Range -->
+                        <div class="mb-8">
+                            <h4 class="font-semibold mb-4">Price Range</h4>
+                            <div class="space-y-4">
+                                <input type="range" class="price-range-slider w-full" min="0" max="1000" value="500" id="price-range">
+                                <div class="flex justify-between text-sm text-gray-600">
+                                    <span>$0</span>
+                                    <span id="price-value">$500</span>
+                                    <span>$1000</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Features -->
+                        <div class="mb-8">
+                            <h4 class="font-semibold mb-4">Features</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="feature-filter mr-3" value="responsive">
+                                    <span>Responsive Design</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="feature-filter mr-3" value="seo">
+                                    <span>SEO Optimized</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="feature-filter mr-3" value="support">
+                                    <span>24/7 Support</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="feature-filter mr-3" value="customizable">
+                                    <span>Customizable</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Clear Filters -->
+                        <button id="clear-filters" class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                            Clear All Filters
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Products Grid -->
+                <div class="lg:w-3/4">
+                    <!-- Sort and View Options -->
+                    <div class="flex justify-between items-center mb-8">
+                        <div class="flex items-center gap-4">
+                            <span class="text-gray-600">Sort by:</span>
+                            <select id="sort-select" class="border border-gray-200 rounded-lg px-4 py-2 focus:border-sage outline-none">
+                                <option value="name">Name</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="rating">Rating</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex items-center gap-2">
+                            <span class="text-gray-600">View:</span>
+                            <button id="grid-view" class="p-2 bg-sage text-white rounded-lg">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                </svg>
+                            </button>
+                            <button id="list-view" class="p-2 bg-gray-200 text-gray-600 rounded-lg">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Products Count -->
+                    <div class="mb-6">
+                        <p class="text-gray-600">
+                            Showing <span id="products-count">12</span> of <span id="total-products">12</span> products
+                        </p>
+                    </div>
+                    
+                    <!-- Products Grid -->
+                    <div id="products-grid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+                        <!-- Product cards will be dynamically generated -->
+                    </div>
+                    
+                    <!-- Load More Button -->
+                    <div class="text-center mt-12">
+                        <button id="load-more" class="bg-sage text-white px-8 py-4 rounded-full font-semibold hover:bg-sage/90 transition-colors">
+                            Load More Products
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sage to-terracotta rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <span class="ml-3 font-display font-bold text-xl">ModernFlex</span>
+                </div>
+                
+                <div class="flex justify-center space-x-8 mb-6">
+                    <a href="index.html" class="text-gray-600 hover:text-sage transition-colors">Home</a>
+                    <a href="products.html" class="text-sage font-medium">Products</a>
+                    <a href="services.html" class="text-gray-600 hover:text-sage transition-colors">Services</a>
+                    <a href="about.html" class="text-gray-600 hover:text-sage transition-colors">About</a>
+                    <a href="contact.html" class="text-gray-600 hover:text-sage transition-colors">Contact</a>
+                </div>
+                
+                <p class="text-gray-600 text-sm">
+                    © 2025 ModernFlex. All rights reserved. Made with ❤️ for the modern web.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Product Detail Modal -->
+    <div class="modal" data-modal="product-detail">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            <div id="modal-content">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Product data
+        const products = [
+            {
+                id: 1,
+                name: "Web Design Suite",
+                price: 299,
+                category: "web",
+                image: "resources/products-hero.png",
+                rating: 4.8,
+                features: ["responsive", "seo", "customizable"],
+                description: "Complete web design solution with responsive layouts and modern aesthetics.",
+                details: "Our comprehensive web design solution includes everything you need to create stunning, responsive websites that convert visitors into customers."
+            },
+            {
+                id: 2,
+                name: "Mobile App Kit",
+                price: 499,
+                category: "mobile",
+                image: "resources/products-hero.png",
+                rating: 4.9,
+                features: ["responsive", "customizable", "support"],
+                description: "Native mobile app development with cross-platform compatibility.",
+                details: "Build beautiful, high-performance mobile applications for iOS and Android with our comprehensive development kit."
+            },
+            {
+                id: 3,
+                name: "Brand Identity Pack",
+                price: 399,
+                category: "branding",
+                image: "resources/products-hero.png",
+                rating: 4.7,
+                features: ["customizable", "seo"],
+                description: "Complete branding solution with logo, colors, and brand guidelines.",
+                details: "Establish a strong brand identity with our comprehensive branding package including logo design, color palettes, and brand guidelines."
+            },
+            {
+                id: 4,
+                name: "E-commerce Platform",
+                price: 799,
+                category: "web",
+                image: "resources/products-hero.png",
+                rating: 4.9,
+                features: ["responsive", "seo", "support", "customizable"],
+                description: "Full-featured online store with payment integration and inventory management.",
+                details: "Launch your online store with our powerful e-commerce platform featuring payment processing, inventory management, and marketing tools."
+            },
+            {
+                id: 5,
+                name: "Progressive Web App",
+                price: 599,
+                category: "mobile",
+                image: "resources/products-hero.png",
+                rating: 4.6,
+                features: ["responsive", "seo", "customizable"],
+                description: "Modern PWA development with offline capabilities and app-like experience.",
+                details: "Create app-like experiences on the web with our Progressive Web App solution featuring offline capabilities and push notifications."
+            },
+            {
+                id: 6,
+                name: "Marketing Materials",
+                price: 199,
+                category: "marketing",
+                image: "resources/products-hero.png",
+                rating: 4.5,
+                features: ["customizable"],
+                description: "Professional marketing collateral with consistent brand messaging.",
+                details: "Get professional marketing materials including brochures, business cards, and digital assets with consistent brand messaging."
+            },
+            {
+                id: 7,
+                name: "SEO Optimization Tool",
+                price: 149,
+                category: "marketing",
+                image: "resources/products-hero.png",
+                rating: 4.4,
+                features: ["seo", "customizable"],
+                description: "Advanced SEO tools and analytics to improve search rankings.",
+                details: "Boost your search engine rankings with our comprehensive SEO optimization toolkit including keyword research and analytics."
+            },
+            {
+                id: 8,
+                name: "Social Media Kit",
+                price: 249,
+                category: "marketing",
+                image: "resources/products-hero.png",
+                rating: 4.3,
+                features: ["customizable", "support"],
+                description: "Complete social media branding and content creation package.",
+                details: "Enhance your social media presence with our complete branding and content creation package for all major platforms."
+            },
+            {
+                id: 9,
+                name: "UI/UX Design System",
+                price: 349,
+                category: "web",
+                image: "resources/products-hero.png",
+                rating: 4.8,
+                features: ["responsive", "customizable"],
+                description: "Comprehensive design system with components and guidelines.",
+                details: "Create consistent, beautiful user interfaces with our comprehensive design system including components, patterns, and guidelines."
+            },
+            {
+                id: 10,
+                name: "Analytics Dashboard",
+                price: 199,
+                category: "web",
+                image: "resources/products-hero.png",
+                rating: 4.6,
+                features: ["responsive", "customizable", "support"],
+                description: "Real-time analytics and reporting dashboard for your business.",
+                details: "Make data-driven decisions with our comprehensive analytics dashboard featuring real-time reporting and insights."
+            },
+            {
+                id: 11,
+                name: "Email Template Pack",
+                price: 99,
+                category: "marketing",
+                image: "resources/products-hero.png",
+                rating: 4.2,
+                features: ["responsive", "customizable"],
+                description: "Professional email templates for marketing campaigns.",
+                details: "Create stunning email campaigns with our professionally designed email templates that work across all email clients."
+            },
+            {
+                id: 12,
+                name: "Landing Page Builder",
+                price: 279,
+                category: "web",
+                image: "resources/products-hero.png",
+                rating: 4.7,
+                features: ["responsive", "seo", "customizable"],
+                description: "Drag-and-drop landing page builder with conversion optimization.",
+                details: "Build high-converting landing pages with our intuitive drag-and-drop builder featuring A/B testing and optimization tools."
+            }
+        ];
+
+        let filteredProducts = [...products];
+        let currentView = 'grid';
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts();
+            setupEventListeners();
+            updateProductsCount();
+        });
+
+        function setupEventListeners() {
+            // Search functionality
+            document.getElementById('product-search').addEventListener('input', handleSearch);
+            
+            // Category filters
+            document.querySelectorAll('.category-filter').forEach(filter => {
+                filter.addEventListener('change', handleCategoryFilter);
+            });
+            
+            // Price range filter
+            document.getElementById('price-range').addEventListener('input', handlePriceFilter);
+            
+            // Feature filters
+            document.querySelectorAll('.feature-filter').forEach(filter => {
+                filter.addEventListener('change', handleFeatureFilter);
+            });
+            
+            // Sort functionality
+            document.getElementById('sort-select').addEventListener('change', handleSort);
+            
+            // View toggle
+            document.getElementById('grid-view').addEventListener('click', () => setView('grid'));
+            document.getElementById('list-view').addEventListener('click', () => setView('list'));
+            
+            // Clear filters
+            document.getElementById('clear-filters').addEventListener('click', clearFilters);
+            
+            // Load more (placeholder)
+            document.getElementById('load-more').addEventListener('click', () => {
+                alert('All products loaded!');
+            });
+        }
+
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.description.toLowerCase().includes(searchTerm)
+            );
+            renderProducts();
+            updateProductsCount();
+        }
+
+        function handleCategoryFilter() {
+            const checkedCategories = Array.from(document.querySelectorAll('.category-filter:checked'))
+                .map(filter => filter.value);
+            
+            if (checkedCategories.includes('all')) {
+                filteredProducts = [...products];
+            } else {
+                filteredProducts = products.filter(product => 
+                    checkedCategories.includes(product.category)
+                );
+            }
+            
+            renderProducts();
+            updateProductsCount();
+        }
+
+        function handlePriceFilter(e) {
+            const maxPrice = parseInt(e.target.value);
+            document.getElementById('price-value').textContent = `$${maxPrice}`;
+            
+            filteredProducts = filteredProducts.filter(product => product.price <= maxPrice);
+            renderProducts();
+            updateProductsCount();
+        }
+
+        function handleFeatureFilter() {
+            const checkedFeatures = Array.from(document.querySelectorAll('.feature-filter:checked'))
+                .map(filter => filter.value);
+            
+            if (checkedFeatures.length === 0) {
+                // If no features selected, show all filtered products
+                renderProducts();
+                return;
+            }
+            
+            filteredProducts = filteredProducts.filter(product => 
+                checkedFeatures.some(feature => product.features.includes(feature))
+            );
+            
+            renderProducts();
+            updateProductsCount();
+        }
+
+        function handleSort(e) {
+            const sortBy = e.target.value;
+            
+            switch(sortBy) {
+                case 'name':
+                    filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'price-low':
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'rating':
+                    filteredProducts.sort((a, b) => b.rating - a.rating);
+                    break;
+            }
+            
+            renderProducts();
+        }
+
+        function setView(view) {
+            currentView = view;
+            
+            // Update button states
+            document.getElementById('grid-view').className = view === 'grid' ? 
+                'p-2 bg-sage text-white rounded-lg' : 
+                'p-2 bg-gray-200 text-gray-600 rounded-lg';
+            document.getElementById('list-view').className = view === 'list' ? 
+                'p-2 bg-sage text-white rounded-lg' : 
+                'p-2 bg-gray-200 text-gray-600 rounded-lg';
+            
+            renderProducts();
+        }
+
+        function clearFilters() {
+            // Reset all filters
+            document.getElementById('product-search').value = '';
+            document.querySelectorAll('.category-filter').forEach(filter => {
+                filter.checked = filter.value === 'all';
+            });
+            document.getElementById('price-range').value = 500;
+            document.getElementById('price-value').textContent = '$500';
+            document.querySelectorAll('.feature-filter').forEach(filter => {
+                filter.checked = false;
+            });
+            document.getElementById('sort-select').value = 'name';
+            
+            // Reset filtered products
+            filteredProducts = [...products];
+            renderProducts();
+            updateProductsCount();
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            
+            if (currentView === 'grid') {
+                grid.className = 'grid md:grid-cols-2 xl:grid-cols-3 gap-8';
+                grid.innerHTML = filteredProducts.map(product => createProductCard(product)).join('');
+            } else {
+                grid.className = 'space-y-6';
+                grid.innerHTML = filteredProducts.map(product => createProductListItem(product)).join('');
+            }
+            
+            // Add event listeners to new product cards
+            addProductEventListeners();
+        }
+
+        function createProductCard(product) {
+            return `
+                <div class="product-card bg-white rounded-2xl p-6 shadow-lg animate-on-scroll" data-product-id="${product.id}">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-xl mb-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-display text-xl font-bold">${product.name}</h3>
+                        <div class="flex items-center">
+                            <span class="text-yellow-400">★</span>
+                            <span class="text-sm text-gray-600 ml-1">${product.rating}</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">${product.description}</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${product.features.map(feature => `<span class="bg-sage/10 text-sage px-2 py-1 rounded-full text-xs">${feature}</span>`).join('')}
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-sage">$${product.price}</span>
+                        <div class="flex gap-2">
+                            <button class="view-details bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors" data-product-id="${product.id}">
+                                Details
+                            </button>
+                            <button class="add-to-cart bg-sage text-white px-4 py-2 rounded-lg hover:bg-sage/90 transition-colors" data-product-id="${product.id}">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createProductListItem(product) {
+            return `
+                <div class="product-card bg-white rounded-2xl p-6 shadow-lg animate-on-scroll flex gap-6" data-product-id="${product.id}">
+                    <img src="${product.image}" alt="${product.name}" class="w-32 h-32 object-cover rounded-xl flex-shrink-0">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display text-2xl font-bold">${product.name}</h3>
+                            <div class="flex items-center">
+                                <span class="text-yellow-400">★</span>
+                                <span class="text-sm text-gray-600 ml-1">${product.rating}</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-4">${product.description}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${product.features.map(feature => `<span class="bg-sage/10 text-sage px-2 py-1 rounded-full text-xs">${feature}</span>`).join('')}
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-3xl font-bold text-sage">$${product.price}</span>
+                            <div class="flex gap-2">
+                                <button class="view-details bg-gray-100 text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors" data-product-id="${product.id}">
+                                    View Details
+                                </button>
+                                <button class="add-to-cart bg-sage text-white px-6 py-3 rounded-lg hover:bg-sage/90 transition-colors" data-product-id="${product.id}">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addProductEventListeners() {
+            // View details buttons
+            document.querySelectorAll('.view-details').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productId = parseInt(e.target.dataset.productId);
+                    showProductDetails(productId);
+                });
+            });
+            
+            // Add to cart buttons
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productId = parseInt(e.target.dataset.productId);
+                    addToCart(productId);
+                });
+            });
+        }
+
+        function showProductDetails(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover rounded-xl mb-6">
+                <h2 class="font-display text-4xl font-bold mb-4">${product.name}</h2>
+                <div class="flex items-center mb-4">
+                    <span class="text-yellow-400 text-2xl">★</span>
+                    <span class="text-lg text-gray-600 ml-2">${product.rating} out of 5</span>
+                </div>
+                <p class="text-gray-600 text-lg mb-6">${product.details}</p>
+                <div class="mb-6">
+                    <h3 class="font-semibold text-xl mb-3">Features:</h3>
+                    <div class="flex flex-wrap gap-2">
+                        ${product.features.map(feature => `<span class="bg-sage/10 text-sage px-3 py-2 rounded-full">${feature}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-4xl font-bold text-sage">$${product.price}</span>
+                    <button class="add-to-cart bg-sage text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-sage/90 transition-colors" data-product-id="${product.id}">
+                        Add to Cart
+                    </button>
+                </div>
+            `;
+            
+            // Add event listener to the add to cart button in modal
+            modalContent.querySelector('.add-to-cart').addEventListener('click', (e) => {
+                const productId = parseInt(e.target.dataset.productId);
+                addToCart(productId);
+            });
+            
+            // Show modal
+            document.querySelector('[data-modal="product-detail"]').classList.add('active');
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            // Simulate adding to cart
+            anime({
+                targets: `[data-product-id="${productId}"]`,
+                scale: [1, 1.05, 1],
+                duration: 300,
+                easing: 'easeInOutQuart'
+            });
+            
+            // Show success message
+            showNotification(`${product.name} added to cart!`, 'success');
+            
+            // Update cart badge (simulate)
+            const cartBadge = document.querySelector('.cart-badge');
+            const currentCount = parseInt(cartBadge.textContent);
+            cartBadge.textContent = currentCount + 1;
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 right-4 p-4 rounded-lg text-white z-50 ${type === 'success' ? 'bg-green-500' : 'bg-blue-500'}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            anime({
+                targets: notification,
+                translateX: [300, 0],
+                opacity: [0, 1],
+                duration: 300,
+                easing: 'easeOutQuart'
+            });
+            
+            setTimeout(() => {
+                anime({
+                    targets: notification,
+                    translateX: [0, 300],
+                    opacity: [1, 0],
+                    duration: 300,
+                    easing: 'easeInQuart',
+                    complete: () => notification.remove()
+                });
+            }, 3000);
+        }
+
+        function updateProductsCount() {
+            document.getElementById('products-count').textContent = filteredProducts.length;
+        }
+
+        // Initialize scroll animations
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Call after products are rendered
+        setTimeout(initScrollAnimations, 100);
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>

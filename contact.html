@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - ModernFlex</title>
+    <meta name="description" content="Get in touch with ModernFlex for your digital design and development needs. We're here to help transform your online presence.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
+    
+    <!-- Leaflet for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Playfair Display', 'serif'],
+                        'body': ['Inter', 'sans-serif'],
+                        'mono': ['Space Mono', 'monospace']
+                    },
+                    colors: {
+                        'sage': '#8FBC8F',
+                        'terracotta': '#D4A574',
+                        'charcoal': '#2C2C2C',
+                        'warm-white': '#FAFAFA'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #8FBC8F 0%, #D4A574 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .contact-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #8FBC8F;
+            box-shadow: 0 0 0 3px rgba(143, 188, 143, 0.1);
+        }
+        
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            color: #6b7280;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            background: white;
+            padding: 0 0.5rem;
+        }
+        
+        .form-group.focused .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            transform: translateY(-2.5rem) scale(0.8);
+            color: #8FBC8F;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .form-message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .form-message--success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .form-message--error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem 0;
+        }
+        
+        .faq-question {
+            cursor: pointer;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .faq-question:hover {
+            color: #8FBC8F;
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            color: #6b7280;
+            margin-top: 0;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            margin-top: 1rem;
+        }
+        
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+        
+        .map-container {
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .contact-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .contact-info-icon {
+            width: 48px;
+            height: 48px;
+            background: #8FBC8F;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .contact-info-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 1rem;
+            position: relative;
+            font-weight: 600;
+            color: #6b7280;
+        }
+        
+        .step.active {
+            background: #8FBC8F;
+            color: white;
+        }
+        
+        .step.completed {
+            background: #10b981;
+            color: white;
+        }
+        
+        .step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 2rem;
+            height: 2px;
+            background: #e5e7eb;
+            transform: translateY(-50%);
+        }
+        
+        .step:last-child::after {
+            display: none;
+        }
+        
+        .step.completed::after {
+            background: #10b981;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+        }
+        
+        .budget-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
+            outline: none;
+        }
+        
+        .budget-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #8FBC8F;
+            cursor: pointer;
+        }
+        
+        .budget-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #8FBC8F;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+<body class="font-body bg-warm-white text-charcoal">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sage to-terracotta rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <span class="ml-3 font-display font-bold text-xl">ModernFlex</span>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-sage transition-colors">Home</a>
+                    <a href="products.html" class="text-gray-600 hover:text-sage transition-colors">Products</a>
+                    <a href="services.html" class="text-gray-600 hover:text-sage transition-colors">Services</a>
+                    <a href="about.html" class="text-gray-600 hover:text-sage transition-colors">About</a>
+                    <a href="contact.html" class="text-sage font-medium border-b-2 border-sage pb-1">Contact</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden menu-toggle p-2">
+                    <div class="w-6 h-6 flex flex-col justify-center items-center">
+                        <span class="w-4 h-0.5 bg-charcoal transition-all"></span>
+                        <span class="w-4 h-0.5 bg-charcoal mt-1 transition-all"></span>
+                        <span class="w-4 h-0.5 bg-charcoal mt-1 transition-all"></span>
+                    </div>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu md:hidden bg-white border-t border-gray-100 hidden">
+            <div class="px-4 py-4 space-y-3">
+                <a href="index.html" class="block text-gray-600 hover:text-sage transition-colors">Home</a>
+                <a href="products.html" class="block text-gray-600 hover:text-sage transition-colors">Products</a>
+                <a href="services.html" class="block text-gray-600 hover:text-sage transition-colors">Services</a>
+                <a href="about.html" class="block text-gray-600 hover:text-sage transition-colors">About</a>
+                <a href="contact.html" class="block text-sage font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 bg-gradient-to-br from-sage/10 to-terracotta/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="font-display text-5xl md:text-7xl font-black mb-6">
+                    Contact <span class="gradient-text">Us</span>
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                    Ready to transform your digital presence? Get in touch with our team and let's discuss how we can help your business grow.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Information -->
+    <section class="py-20 animate-on-scroll">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-20">
+                <div class="contact-card text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sage to-terracotta rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-4">Email</h3>
+                    <p class="text-gray-600 mb-4">Get in touch via email for any inquiries</p>
+                    <a href="mailto:hello@modernflex.com" class="text-sage font-semibold hover:text-sage/80 transition-colors">
+                        hello@modernflex.com
+                    </a>
+                </div>
+                
+                <div class="contact-card text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sage to-terracotta rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-4">Phone</h3>
+                    <p class="text-gray-600 mb-4">Call us for immediate assistance</p>
+                    <a href="tel:+1234567890" class="text-sage font-semibold hover:text-sage/80 transition-colors">
+                        +1 (234) 567-8900
+                    </a>
+                </div>
+                
+                <div class="contact-card text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sage to-terracotta rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-4">Office Hours</h3>
+                    <p class="text-gray-600 mb-4">Monday - Friday</p>
+                    <p class="text-sage font-semibold">
+                        9:00 AM - 6:00 PM EST
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="py-20 bg-gray-50 animate-on-scroll">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">
+                    Get Started <span class="gradient-text">Today</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Tell us about your project and we'll get back to you with a detailed proposal within 24 hours.
+                </p>
+            </div>
+            
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step active" data-step="1">1</div>
+                <div class="step" data-step="2">2</div>
+                <div class="step" data-step="3">3</div>
+            </div>
+            
+            <form id="contact-form" class="bg-white rounded-2xl p-8 shadow-lg">
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" data-step="1">
+                    <h3 class="font-display text-2xl font-bold mb-6 text-center">Tell us about yourself</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <input type="text" class="form-input" id="firstName" name="firstName" placeholder=" " required>
+                            <label class="form-label" for="firstName">First Name</label>
+                            <div class="error-message"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="text" class="form-input" id="lastName" name="lastName" placeholder=" " required>
+                            <label class="form-label" for="lastName">Last Name</label>
+                            <div class="error-message"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="email" class="form-input" id="email" name="email" placeholder=" " required>
+                        <label class="form-label" for="email">Email Address</label>
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="tel" class="form-input" id="phone" name="phone" placeholder=" ">
+                        <label class="form-label" for="phone">Phone Number (Optional)</label>
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="company" name="company" placeholder=" ">
+                        <label class="form-label" for="company">Company Name (Optional)</label>
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="button" class="next-step bg-sage text-white px-8 py-3 rounded-lg font-semibold hover:bg-sage/90 transition-colors">
+                            Next Step
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Project Details -->
+                <div class="form-step" data-step="2">
+                    <h3 class="font-display text-2xl font-bold mb-6 text-center">Project Details</h3>
+                    
+                    <div class="form-group">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">What services do you need?</label>
+                        <div class="grid md:grid-cols-2 gap-3">
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-sage cursor-pointer">
+                                <input type="checkbox" name="services[]" value="web-design" class="mr-3">
+                                <span>Web Design</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-sage cursor-pointer">
+                                <input type="checkbox" name="services[]" value="mobile-app" class="mr-3">
+                                <span>Mobile App</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-sage cursor-pointer">
+                                <input type="checkbox" name="services[]" value="ecommerce" class="mr-3">
+                                <span>E-commerce</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-sage cursor-pointer">
+                                <input type="checkbox" name="services[]" value="branding" class="mr-3">
+                                <span>Branding</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-sage cursor-pointer">
+                                <input type="checkbox" name="services[]" value="marketing" class="mr-3">
+                                <span>Digital Marketing</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-sage cursor-pointer">
+                                <input type="checkbox" name="services[]" value="consulting" class="mr-3">
+                                <span>Consulting</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">What's your budget range?</label>
+                        <input type="range" class="budget-slider w-full" min="1000" max="50000" value="10000" id="budget" name="budget">
+                        <div class="flex justify-between text-sm text-gray-600 mt-2">
+                            <span>$1,000</span>
+                            <span id="budget-value" class="font-semibold text-sage">$10,000</span>
+                            <span>$50,000+</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Timeline</label>
+                        <select class="form-input" id="timeline" name="timeline" required>
+                            <option value="">Select timeline</option>
+                            <option value="asap">ASAP</option>
+                            <option value="1-month">Within 1 month</option>
+                            <option value="2-3-months">2-3 months</option>
+                            <option value="3-6-months">3-6 months</option>
+                            <option value="flexible">Flexible</option>
+                        </select>
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button type="button" class="prev-step bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                            Previous
+                        </button>
+                        <button type="button" class="next-step bg-sage text-white px-8 py-3 rounded-lg font-semibold hover:bg-sage/90 transition-colors">
+                            Next Step
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Project Description -->
+                <div class="form-step" data-step="3">
+                    <h3 class="font-display text-2xl font-bold mb-6 text-center">Project Description</h3>
+                    
+                    <div class="form-group">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Tell us about your project</label>
+                        <textarea class="form-input h-32 resize-none" id="description" name="description" placeholder=" " required></textarea>
+                        <label class="form-label" for="description">Project description, goals, and any specific requirements...</label>
+                        <div class="error-message"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">How did you hear about us?</label>
+                        <select class="form-input" id="referral" name="referral">
+                            <option value="">Select an option</option>
+                            <option value="google">Google Search</option>
+                            <option value="social-media">Social Media</option>
+                            <option value="referral">Referral</option>
+                            <option value="advertisement">Advertisement</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button type="button" class="prev-step bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                            Previous
+                        </button>
+                        <button type="submit" class="bg-sage text-white px-8 py-3 rounded-lg font-semibold hover:bg-sage/90 transition-colors">
+                            Send Message
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Office Location -->
+    <section class="py-20 animate-on-scroll">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">
+                    Visit Our <span class="gradient-text">Office</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Located in the heart of the tech district, our office is open for meetings and consultations.
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div>
+                    <div class="map-container" id="map"></div>
+                </div>
+                
+                <div>
+                    <h3 class="font-display text-2xl font-bold mb-6">ModernFlex Headquarters</h3>
+                    
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">Address</div>
+                            <div class="text-gray-600">123 Innovation Drive<br>Tech District, CA 94105</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">Phone</div>
+                            <div class="text-gray-600">+1 (234) 567-8900</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">Office Hours</div>
+                            <div class="text-gray-600">Monday - Friday<br>9:00 AM - 6:00 PM EST</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h4 class="font-display text-xl font-bold mb-4">Parking & Transportation</h4>
+                        <p class="text-gray-600 mb-4">
+                            Our office is easily accessible by public transportation. The nearest subway station is Tech Center (Blue Line), just a 5-minute walk away.
+                        </p>
+                        <p class="text-gray-600">
+                            Visitor parking is available in the building garage. Please check in at the front desk upon arrival.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 bg-gray-50 animate-on-scroll">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">
+                    Frequently Asked <span class="gradient-text">Questions</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Get answers to common questions about our services and process.
+                </p>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How long does a typical project take?</span>
+                        <svg class="faq-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">
+                        Project timelines vary depending on scope and complexity. A simple website might take 2-4 weeks, while a complex e-commerce platform could take 8-16 weeks. We'll provide a detailed timeline during our initial consultation.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What's included in your web design service?</span>
+                        <svg class="faq-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">
+                        Our web design service includes custom design, responsive development, SEO optimization, content management system, basic training, and 30 days of support. We also provide analytics integration and security features.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do you offer ongoing maintenance and support?</span>
+                        <svg class="faq-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">
+                        Yes, we offer various maintenance and support packages to keep your website running smoothly. This includes security updates, performance monitoring, content updates, and technical support.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can you help with digital marketing?</span>
+                        <svg class="faq-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">
+                        Absolutely! We offer comprehensive digital marketing services including SEO, PPC advertising, social media marketing, content marketing, and email campaigns to help grow your online presence.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What makes ModernFlex different from other agencies?</span>
+                        <svg class="faq-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">
+                        We combine creative excellence with technical expertise and a deep understanding of business strategy. Our collaborative approach, attention to detail, and commitment to client success set us apart from the competition.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sage to-terracotta rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <span class="ml-3 font-display font-bold text-xl">ModernFlex</span>
+                </div>
+                
+                <div class="flex justify-center space-x-8 mb-6">
+                    <a href="index.html" class="text-gray-600 hover:text-sage transition-colors">Home</a>
+                    <a href="products.html" class="text-gray-600 hover:text-sage transition-colors">Products</a>
+                    <a href="services.html" class="text-gray-600 hover:text-sage transition-colors">Services</a>
+                    <a href="about.html" class="text-gray-600 hover:text-sage transition-colors">About</a>
+                    <a href="contact.html" class="text-sage font-medium">Contact</a>
+                </div>
+                
+                <p class="text-gray-600 text-sm">
+                    © 2025 ModernFlex. All rights reserved. Made with ❤️ for the modern web.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initContactForm();
+            initFAQ();
+            initMap();
+            initScrollAnimations();
+        });
+
+        function initContactForm() {
+            const nextButtons = document.querySelectorAll('.next-step');
+            const prevButtons = document.querySelectorAll('.prev-step');
+            const budgetSlider = document.getElementById('budget');
+            const budgetValue = document.getElementById('budget-value');
+            const form = document.getElementById('contact-form');
+
+            // Next step buttons
+            nextButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (validateCurrentStep()) {
+                        nextStep();
+                    }
+                });
+            });
+
+            // Previous step buttons
+            prevButtons.forEach(button => {
+                button.addEventListener('click', prevStep);
+            });
+
+            // Budget slider
+            budgetSlider.addEventListener('input', (e) => {
+                const value = parseInt(e.target.value);
+                budgetValue.textContent = value >= 50000 ? '$50,000+' : `$${value.toLocaleString()}`;
+            });
+
+            // Form submission
+            form.addEventListener('submit', handleFormSubmit);
+
+            // Add focus/blur handlers for form inputs
+            const formInputs = document.querySelectorAll('.form-input');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentElement.classList.add('focused');
+                });
+
+                input.addEventListener('blur', () => {
+                    if (!input.value) {
+                        input.parentElement.classList.remove('focused');
+                    }
+                    validateField(input);
+                });
+
+                input.addEventListener('input', () => {
+                    validateField(input);
+                });
+            });
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                // Hide current step
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+                
+                // Update step indicator
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('completed');
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+                
+                currentStep++;
+                
+                // Show next step
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+                
+                updateStepIndicator();
+                
+                // Animate step transition
+                anime({
+                    targets: '.form-step.active',
+                    opacity: [0, 1],
+                    translateX: [50, 0],
+                    duration: 400,
+                    easing: 'easeOutQuart'
+                });
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                // Hide current step
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+                
+                // Update step indicator
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+                
+                currentStep--;
+                
+                // Show previous step
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('completed');
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+                
+                updateStepIndicator();
+                
+                // Animate step transition
+                anime({
+                    targets: '.form-step.active',
+                    opacity: [0, 1],
+                    translateX: [-50, 0],
+                    duration: 400,
+                    easing: 'easeOutQuart'
+                });
+            }
+        }
+
+        function updateStepIndicator() {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                const stepNumber = index + 1;
+                step.classList.remove('active', 'completed');
+                
+                if (stepNumber === currentStep) {
+                    step.classList.add('active');
+                } else if (stepNumber < currentStep) {
+                    step.classList.add('completed');
+                }
+            });
+        }
+
+        function validateCurrentStep() {
+            const currentStepElement = document.querySelector(`[data-step="${currentStep}"]`);
+            const requiredFields = currentStepElement.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+
+            // Special validation for step 2 (services)
+            if (currentStep === 2) {
+                const serviceCheckboxes = currentStepElement.querySelectorAll('input[name="services[]"]');
+                const checkedServices = Array.from(serviceCheckboxes).filter(cb => cb.checked);
+                if (checkedServices.length === 0) {
+                    showNotification('Please select at least one service.', 'error');
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        function validateField(field) {
+            const value = field.value.trim();
+            let isValid = true;
+            let message = '';
+
+            // Required field check
+            if (field.hasAttribute('required') && !value) {
+                isValid = false;
+                message = 'This field is required';
+            }
+            
+            // Email validation
+            else if (field.type === 'email' && value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    isValid = false;
+                    message = 'Please enter a valid email address';
+                }
+            }
+
+            // Update field state
+            if (isValid) {
+                field.parentElement.classList.remove('error');
+                field.parentElement.classList.add('valid');
+            } else {
+                field.parentElement.classList.add('error');
+                field.parentElement.classList.remove('valid');
+            }
+
+            // Show/hide error message
+            let errorElement = field.parentElement.querySelector('.error-message');
+            if (!errorElement) {
+                errorElement = document.createElement('div');
+                errorElement.className = 'error-message';
+                field.parentElement.appendChild(errorElement);
+            }
+            
+            errorElement.textContent = message;
+            errorElement.style.display = isValid ? 'none' : 'block';
+
+            return isValid;
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            if (!validateCurrentStep()) {
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            
+            // Simulate form submission
+            setTimeout(() => {
+                // Show success message
+                showFormMessage(e.target, 'success', 'Thank you! Your message has been sent successfully. We\'ll get back to you within 24 hours.');
+                
+                // Reset form
+                e.target.reset();
+                currentStep = 1;
+                document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+                document.querySelector('[data-step="1"]').classList.add('active');
+                updateStepIndicator();
+                
+                // Reset form labels
+                document.querySelectorAll('.form-group').forEach(group => {
+                    group.classList.remove('focused', 'valid', 'error');
+                });
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }, 2000);
+        }
+
+        function showFormMessage(form, type, message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = `form-message form-message--${type}`;
+            messageElement.textContent = message;
+            
+            form.appendChild(messageElement);
+            
+            anime({
+                targets: messageElement,
+                opacity: [0, 1],
+                translateY: [-20, 0],
+                duration: 400,
+                easing: 'easeOutQuart'
+            });
+            
+            setTimeout(() => {
+                anime({
+                    targets: messageElement,
+                    opacity: [1, 0],
+                    translateY: [0, -20],
+                    duration: 400,
+                    easing: 'easeInQuart',
+                    complete: () => {
+                        messageElement.remove();
+                    }
+                });
+            }, 5000);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 right-4 p-4 rounded-lg text-white z-50 ${type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            anime({
+                targets: notification,
+                translateX: [300, 0],
+                opacity: [0, 1],
+                duration: 300,
+                easing: 'easeOutQuart'
+            });
+            
+            setTimeout(() => {
+                anime({
+                    targets: notification,
+                    translateX: [0, 300],
+                    opacity: [1, 0],
+                    duration: 300,
+                    easing: 'easeInQuart',
+                    complete: () => notification.remove()
+                });
+            }, 3000);
+        }
+
+        function initFAQ() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close all FAQ items
+                    faqItems.forEach(faqItem => {
+                        faqItem.classList.remove('active');
+                    });
+                    
+                    // Open clicked item if it wasn't active
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        function initMap() {
+            // Initialize Leaflet map
+            const map = L.map('map').setView([37.7749, -122.4194], 13);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            // Add marker for office location
+            const marker = L.marker([37.7749, -122.4194]).addTo(map);
+            marker.bindPopup('<b>ModernFlex Headquarters</b><br>123 Innovation Drive<br>Tech District, CA 94105').openPopup();
+        }
+
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+        }
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>

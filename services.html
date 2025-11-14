@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - ModernFlex</title>
+    <meta name="description" content="Professional web design and development services tailored for modern businesses.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
+    
+    <!-- ECharts for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- Splide for carousels -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Playfair Display', 'serif'],
+                        'body': ['Inter', 'sans-serif'],
+                        'mono': ['Space Mono', 'monospace']
+                    },
+                    colors: {
+                        'sage': '#8FBC8F',
+                        'terracotta': '#D4A574',
+                        'charcoal': '#2C2C2C',
+                        'warm-white': '#FAFAFA'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #8FBC8F 0%, #D4A574 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .service-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table {
+            overflow-x: auto;
+        }
+        
+        .comparison-table table {
+            min-width: 800px;
+        }
+        
+        .pricing-calculator {
+            background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+        }
+        
+        .calculator-input {
+            transition: all 0.3s ease;
+        }
+        
+        .calculator-input:focus {
+            border-color: #8FBC8F;
+            box-shadow: 0 0 0 3px rgba(143, 188, 143, 0.1);
+        }
+        
+        .case-study-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .case-study-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .testimonial-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .star-rating {
+            color: #fbbf24;
+            font-size: 1.25rem;
+        }
+        
+        .process-step {
+            position: relative;
+        }
+        
+        .process-step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -2rem;
+            width: 4rem;
+            height: 2px;
+            background: #8FBC8F;
+            transform: translateY(-50%);
+        }
+        
+        .process-step:last-child::after {
+            display: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            z-index: 1;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="font-body bg-warm-white text-charcoal">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sage to-terracotta rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <span class="ml-3 font-display font-bold text-xl">ModernFlex</span>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-sage transition-colors">Home</a>
+                    <a href="products.html" class="text-gray-600 hover:text-sage transition-colors">Products</a>
+                    <a href="services.html" class="text-sage font-medium border-b-2 border-sage pb-1">Services</a>
+                    <a href="about.html" class="text-gray-600 hover:text-sage transition-colors">About</a>
+                    <a href="contact.html" class="text-gray-600 hover:text-sage transition-colors">Contact</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden menu-toggle p-2">
+                    <div class="w-6 h-6 flex flex-col justify-center items-center">
+                        <span class="w-4 h-0.5 bg-charcoal transition-all"></span>
+                        <span class="w-4 h-0.5 bg-charcoal mt-1 transition-all"></span>
+                        <span class="w-4 h-0.5 bg-charcoal mt-1 transition-all"></span>
+                    </div>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu md:hidden bg-white border-t border-gray-100 hidden">
+            <div class="px-4 py-4 space-y-3">
+                <a href="index.html" class="block text-gray-600 hover:text-sage transition-colors">Home</a>
+                <a href="products.html" class="block text-gray-600 hover:text-sage transition-colors">Products</a>
+                <a href="services.html" class="block text-sage font-medium">Services</a>
+                <a href="about.html" class="block text-gray-600 hover:text-sage transition-colors">About</a>
+                <a href="contact.html" class="block text-gray-600 hover:text-sage transition-colors">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 bg-gradient-to-br from-sage/10 to-terracotta/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="font-display text-5xl md:text-7xl font-black mb-6">
+                    Our <span class="gradient-text">Services</span>
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                    Comprehensive digital solutions designed to transform your business and elevate your online presence with cutting-edge technology.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Overview -->
+    <section class="py-20 animate-on-scroll">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="service-card bg-white rounded-2xl p-8 shadow-lg" data-service="web-design">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sage to-terracotta rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-4">Web Design</h3>
+                    <p class="text-gray-600 mb-6">Custom website design with modern aesthetics, responsive layouts, and user-centric interfaces that convert visitors into customers.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-sage">From $2,999</span>
+                        <button class="bg-sage text-white px-6 py-3 rounded-lg font-semibold hover:bg-sage/90 transition-colors">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="service-card bg-white rounded-2xl p-8 shadow-lg" data-service="mobile-development">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sage to-terracotta rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-4">Mobile Development</h3>
+                    <p class="text-gray-600 mb-6">Native and cross-platform mobile applications with intuitive user experiences and high-performance functionality.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-sage">From $4,999</span>
+                        <button class="bg-sage text-white px-6 py-3 rounded-lg font-semibold hover:bg-sage/90 transition-colors">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="service-card bg-white rounded-2xl p-8 shadow-lg" data-service="ecommerce">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sage to-terracotta rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-4">E-commerce Solutions</h3>
+                    <p class="text-gray-600 mb-6">Complete online store development with payment integration, inventory management, and conversion optimization.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-sage">From $7,999</span>
+                        <button class="bg-sage text-white px-6 py-3 rounded-lg font-semibold hover:bg-sage/90 transition-colors">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="service-card bg-white rounded-2xl p-8 shadow-lg" data-service="branding">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sage to-terracotta rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-4">Brand Identity</h3>
+                    <p class="text-gray-600 mb-6">Complete brand development including logo design, visual identity, brand guidelines, and marketing collateral.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-sage">From $1,999</span>
+                        <button class="bg-sage text-white px-6 py-3 rounded-lg font-semibold hover:bg-sage/90 transition-colors">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="service-card bg-white rounded-2xl p-8 shadow-lg" data-service="digital-marketing">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sage to-terracotta rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-4">Digital Marketing</h3>
+                    <p class="text-gray-600 mb-6">Strategic digital marketing campaigns including SEO, PPC, social media, and content marketing to drive growth.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-sage">From $1,499/mo</span>
+                        <button class="bg-sage text-white px-6 py-3 rounded-lg font-semibold hover:bg-sage/90 transition-colors">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="service-card bg-white rounded-2xl p-8 shadow-lg" data-service="consulting">
+                    <div class="w-16 h-16 bg-gradient-to-br from-sage to-terracotta rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-4">Strategy Consulting</h3>
+                    <p class="text-gray-600 mb-6">Digital transformation consulting to help businesses optimize their online presence and achieve sustainable growth.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-sage">From $199/hr</span>
+                        <button class="bg-sage text-white px-6 py-3 rounded-lg font-semibold hover:bg-sage/90 transition-colors">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Comparison Tool -->
+    <section class="py-20 bg-gray-50 animate-on-scroll">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">
+                    Service <span class="gradient-text">Comparison</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Compare our services side by side to find the perfect solution for your business needs.
+                </p>
+            </div>
+            
+            <div class="comparison-table bg-white rounded-2xl p-8 shadow-lg">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b-2 border-gray-200">
+                            <th class="text-left py-4 px-4 font-display text-xl font-bold">Service</th>
+                            <th class="text-center py-4 px-4 font-display text-xl font-bold">Timeline</th>
+                            <th class="text-center py-4 px-4 font-display text-xl font-bold">Starting Price</th>
+                            <th class="text-center py-4 px-4 font-display text-xl font-bold">Support</th>
+                            <th class="text-center py-4 px-4 font-display text-xl font-bold">Revisions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-semibold">Web Design</td>
+                            <td class="text-center py-4 px-4">2-4 weeks</td>
+                            <td class="text-center py-4 px-4 text-sage font-bold">$2,999</td>
+                            <td class="text-center py-4 px-4">✓ 30 days</td>
+                            <td class="text-center py-4 px-4">3 rounds</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-semibold">Mobile Development</td>
+                            <td class="text-center py-4 px-4">6-12 weeks</td>
+                            <td class="text-center py-4 px-4 text-sage font-bold">$4,999</td>
+                            <td class="text-center py-4 px-4">✓ 90 days</td>
+                            <td class="text-center py-4 px-4">5 rounds</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-semibold">E-commerce</td>
+                            <td class="text-center py-4 px-4">8-16 weeks</td>
+                            <td class="text-center py-4 px-4 text-sage font-bold">$7,999</td>
+                            <td class="text-center py-4 px-4">✓ 6 months</td>
+                            <td class="text-center py-4 px-4">Unlimited</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-semibold">Brand Identity</td>
+                            <td class="text-center py-4 px-4">3-6 weeks</td>
+                            <td class="text-center py-4 px-4 text-sage font-bold">$1,999</td>
+                            <td class="text-center py-4 px-4">✓ 30 days</td>
+                            <td class="text-center py-4 px-4">5 rounds</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 font-semibold">Digital Marketing</td>
+                            <td class="text-center py-4 px-4">Ongoing</td>
+                            <td class="text-center py-4 px-4 text-sage font-bold">$1,499/mo</td>
+                            <td class="text-center py-4 px-4">✓ 24/7</td>
+                            <td class="text-center py-4 px-4">Monthly</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-semibold">Strategy Consulting</td>
+                            <td class="text-center py-4 px-4">Project based</td>
+                            <td class="text-center py-4 px-4 text-sage font-bold">$199/hr</td>
+                            <td class="text-center py-4 px-4">✓ Email</td>
+                            <td class="text-center py-4 px-4">As needed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Calculator -->
+    <section class="py-20 animate-on-scroll">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">
+                    Pricing <span class="gradient-text">Calculator</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Get an instant estimate for your project by selecting the services you need.
+                </p>
+            </div>
+            
+            <div class="pricing-calculator rounded-2xl p-8 shadow-lg">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-display text-2xl font-bold mb-6">Select Services</h3>
+                        
+                        <div class="space-y-4">
+                            <label class="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-transparent hover:border-sage cursor-pointer service-option" data-service="web-design" data-price="2999">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="mr-4 w-5 h-5 text-sage">
+                                    <div>
+                                        <div class="font-semibold">Web Design</div>
+                                        <div class="text-sm text-gray-600">Custom website design</div>
+                                    </div>
+                                </div>
+                                <span class="text-sage font-bold">$2,999</span>
+                            </label>
+                            
+                            <label class="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-transparent hover:border-sage cursor-pointer service-option" data-service="mobile-development" data-price="4999">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="mr-4 w-5 h-5 text-sage">
+                                    <div>
+                                        <div class="font-semibold">Mobile Development</div>
+                                        <div class="text-sm text-gray-600">Native mobile app</div>
+                                    </div>
+                                </div>
+                                <span class="text-sage font-bold">$4,999</span>
+                            </label>
+                            
+                            <label class="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-transparent hover:border-sage cursor-pointer service-option" data-service="ecommerce" data-price="7999">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="mr-4 w-5 h-5 text-sage">
+                                    <div>
+                                        <div class="font-semibold">E-commerce Platform</div>
+                                        <div class="text-sm text-gray-600">Complete online store</div>
+                                    </div>
+                                </div>
+                                <span class="text-sage font-bold">$7,999</span>
+                            </label>
+                            
+                            <label class="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-transparent hover:border-sage cursor-pointer service-option" data-service="branding" data-price="1999">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="mr-4 w-5 h-5 text-sage">
+                                    <div>
+                                        <div class="font-semibold">Brand Identity</div>
+                                        <div class="text-sm text-gray-600">Complete branding package</div>
+                                    </div>
+                                </div>
+                                <span class="text-sage font-bold">$1,999</span>
+                            </label>
+                            
+                            <label class="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-transparent hover:border-sage cursor-pointer service-option" data-service="seo" data-price="1499">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="mr-4 w-5 h-5 text-sage">
+                                    <div>
+                                        <div class="font-semibold">SEO Optimization</div>
+                                        <div class="text-sm text-gray-600">Search engine optimization</div>
+                                    </div>
+                                </div>
+                                <span class="text-sage font-bold">$1,499</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-display text-2xl font-bold mb-6">Project Estimate</h3>
+                        
+                        <div class="bg-white rounded-lg p-6 mb-6">
+                            <div class="space-y-3" id="selected-services">
+                                <div class="text-gray-500 text-center py-8">
+                                    Select services to see estimate
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-sage text-white rounded-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-xl font-semibold">Total Estimate:</span>
+                                <span class="text-3xl font-bold" id="total-price">$0</span>
+                            </div>
+                            <div class="text-sm opacity-90 mb-4">
+                                *This is an estimate. Final pricing may vary based on project requirements.
+                            </div>
+                            <button class="w-full bg-white text-sage py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                Get Detailed Quote
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies -->
+    <section class="py-20 bg-gray-50 animate-on-scroll">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">
+                    Success <span class="gradient-text">Stories</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Discover how we've helped businesses transform their digital presence and achieve remarkable results.
+                </p>
+            </div>
+            
+            <div class="splide" id="case-studies-slider">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <li class="splide__slide">
+                            <div class="case-study-card">
+                                <img src="resources/team-illustration.png" alt="Tech Startup" class="w-full h-48 object-cover">
+                                <div class="p-6">
+                                    <h3 class="font-display text-2xl font-bold mb-3">Tech Startup Transformation</h3>
+                                    <p class="text-gray-600 mb-4">Complete brand redesign and mobile app development that increased user engagement by 300%.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sage font-semibold">Web Design + Mobile App</span>
+                                        <span class="text-gray-500">6 weeks</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="splide__slide">
+                            <div class="case-study-card">
+                                <img src="resources/team-illustration.png" alt="E-commerce Success" class="w-full h-48 object-cover">
+                                <div class="p-6">
+                                    <h3 class="font-display text-2xl font-bold mb-3">E-commerce Success</h3>
+                                    <p class="text-gray-600 mb-4">Custom e-commerce platform that generated $2M in revenue within the first year of launch.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sage font-semibold">E-commerce Platform</span>
+                                        <span class="text-gray-500">12 weeks</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="splide__slide">
+                            <div class="case-study-card">
+                                <img src="resources/team-illustration.png" alt="Brand Revamp" class="w-full h-48 object-cover">
+                                <div class="p-6">
+                                    <h3 class="font-display text-2xl font-bold mb-3">Brand Revamp</h3>
+                                    <p class="text-gray-600 mb-4">Complete brand identity overhaul that resulted in 150% increase in brand recognition.</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sage font-semibold">Brand Identity</span>
+                                        <span class="text-gray-500">4 weeks</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20 animate-on-scroll">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">
+                    Client <span class="gradient-text">Testimonials</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Hear what our clients have to say about working with ModernFlex.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="testimonial-card">
+                    <div class="star-rating mb-4">★★★★★</div>
+                    <p class="text-gray-600 mb-6 italic">"ModernFlex transformed our online presence completely. The results speak for themselves - our conversion rate increased by 250%!"</p>
+                    <div class="flex items-center justify-center">
+                        <img src="resources/team-illustration.png" alt="Sarah Johnson" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <div class="font-semibold">Sarah Johnson</div>
+                            <div class="text-sm text-gray-500">CEO, TechStart Inc.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="star-rating mb-4">★★★★★</div>
+                    <p class="text-gray-600 mb-6 italic">"Professional, creative, and results-driven. The team at ModernFlex delivered beyond our expectations. Highly recommended!"</p>
+                    <div class="flex items-center justify-center">
+                        <img src="resources/team-illustration.png" alt="Michael Chen" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <div class="font-semibold">Michael Chen</div>
+                            <div class="text-sm text-gray-500">Founder, E-Shop Pro</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="star-rating mb-4">★★★★★</div>
+                    <p class="text-gray-600 mb-6 italic">"The attention to detail and commitment to quality is unmatched. Our new brand identity has elevated our market position significantly."</p>
+                    <div class="flex items-center justify-center">
+                        <img src="resources/team-illustration.png" alt="Emily Rodriguez" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <div class="font-semibold">Emily Rodriguez</div>
+                            <div class="text-sm text-gray-500">Marketing Director, GlobalCorp</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Overview -->
+    <section class="py-20 bg-gray-50 animate-on-scroll">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">
+                    Our <span class="gradient-text">Process</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    A proven methodology that ensures exceptional results for every project.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="process-step text-center">
+                    <div class="w-20 h-20 bg-sage rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-white">1</span>
+                    </div>
+                    <h3 class="font-display text-xl font-bold mb-3">Discovery</h3>
+                    <p class="text-gray-600">We analyze your business needs, target audience, and project requirements.</p>
+                </div>
+                
+                <div class="process-step text-center">
+                    <div class="w-20 h-20 bg-sage rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-white">2</span>
+                    </div>
+                    <h3 class="font-display text-xl font-bold mb-3">Strategy</h3>
+                    <p class="text-gray-600">Develop a comprehensive strategy and project roadmap tailored to your goals.</p>
+                </div>
+                
+                <div class="process-step text-center">
+                    <div class="w-20 h-20 bg-sage rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-white">3</span>
+                    </div>
+                    <h3 class="font-display text-xl font-bold mb-3">Design & Development</h3>
+                    <p class="text-gray-600">Create stunning designs and build robust, scalable solutions.</p>
+                </div>
+                
+                <div class="process-step text-center">
+                    <div class="w-20 h-20 bg-sage rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-white">4</span>
+                    </div>
+                    <h3 class="font-display text-xl font-bold mb-3">Launch & Support</h3>
+                    <p class="text-gray-600">Deploy your project and provide ongoing support and optimization.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sage to-terracotta rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">M</span>
+                    </div>
+                    <span class="ml-3 font-display font-bold text-xl">ModernFlex</span>
+                </div>
+                
+                <div class="flex justify-center space-x-8 mb-6">
+                    <a href="index.html" class="text-gray-600 hover:text-sage transition-colors">Home</a>
+                    <a href="products.html" class="text-gray-600 hover:text-sage transition-colors">Products</a>
+                    <a href="services.html" class="text-sage font-medium">Services</a>
+                    <a href="about.html" class="text-gray-600 hover:text-sage transition-colors">About</a>
+                    <a href="contact.html" class="text-gray-600 hover:text-sage transition-colors">Contact</a>
+                </div>
+                
+                <p class="text-gray-600 text-sm">
+                    © 2025 ModernFlex. All rights reserved. Made with ❤️ for the modern web.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Service Detail Modal -->
+    <div class="modal" data-modal="service-detail">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <button class="modal-close absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            <div id="service-modal-content">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Service data
+        const services = {
+            'web-design': {
+                title: 'Web Design Services',
+                description: 'Custom website design with modern aesthetics, responsive layouts, and user-centric interfaces that convert visitors into customers.',
+                features: [
+                    'Responsive design for all devices',
+                    'Modern UI/UX principles',
+                    'SEO optimization included',
+                    'Fast loading times',
+                    'Cross-browser compatibility',
+                    'Content management system',
+                    'Analytics integration',
+                    'Security features'
+                ],
+                timeline: '2-4 weeks',
+                price: '$2,999',
+                process: [
+                    'Discovery & Requirements Analysis',
+                    'Wireframing & Prototyping',
+                    'Visual Design & Branding',
+                    'Development & Integration',
+                    'Testing & Optimization',
+                    'Launch & Training'
+                ]
+            },
+            'mobile-development': {
+                title: 'Mobile App Development',
+                description: 'Native and cross-platform mobile applications with intuitive user experiences and high-performance functionality.',
+                features: [
+                    'Native iOS & Android apps',
+                    'Cross-platform development',
+                    'Intuitive user interface',
+                    'High-performance functionality',
+                    'App Store optimization',
+                    'Push notifications',
+                    'Offline capabilities',
+                    'Analytics & tracking'
+                ],
+                timeline: '6-12 weeks',
+                price: '$4,999',
+                process: [
+                    'App Strategy & Planning',
+                    'User Experience Design',
+                    'Visual Design & Branding',
+                    'Development & Testing',
+                    'App Store Submission',
+                    'Launch & Support'
+                ]
+            },
+            'ecommerce': {
+                title: 'E-commerce Solutions',
+                description: 'Complete online store development with payment integration, inventory management, and conversion optimization.',
+                features: [
+                    'Custom e-commerce platform',
+                    'Payment gateway integration',
+                    'Inventory management',
+                    'Order processing system',
+                    'Customer management',
+                    'Marketing tools',
+                    'Analytics & reporting',
+                    'Mobile optimization'
+                ],
+                timeline: '8-16 weeks',
+                price: '$7,999',
+                process: [
+                    'Business Requirements Analysis',
+                    'Platform Selection & Setup',
+                    'Design & User Experience',
+                    'Development & Integration',
+                    'Testing & Security',
+                    'Launch & Marketing'
+                ]
+            }
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initPricingCalculator();
+            initCaseStudiesSlider();
+            initServiceModals();
+            initScrollAnimations();
+        });
+
+        function initPricingCalculator() {
+            const serviceOptions = document.querySelectorAll('.service-option');
+            const selectedServices = document.getElementById('selected-services');
+            const totalPrice = document.getElementById('total-price');
+            
+            let currentTotal = 0;
+            let selectedServiceList = [];
+            
+            serviceOptions.forEach(option => {
+                const checkbox = option.querySelector('input[type="checkbox"]');
+                const serviceName = option.querySelector('.font-semibold').textContent;
+                const price = parseInt(option.dataset.price);
+                
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        selectedServiceList.push({ name: serviceName, price: price });
+                        currentTotal += price;
+                        option.classList.add('border-sage', 'bg-sage/5');
+                    } else {
+                        selectedServiceList = selectedServiceList.filter(service => service.name !== serviceName);
+                        currentTotal -= price;
+                        option.classList.remove('border-sage', 'bg-sage/5');
+                    }
+                    
+                    updateSelectedServices();
+                    updateTotalPrice();
+                });
+            });
+            
+            function updateSelectedServices() {
+                if (selectedServiceList.length === 0) {
+                    selectedServices.innerHTML = '<div class="text-gray-500 text-center py-8">Select services to see estimate</div>';
+                } else {
+                    selectedServices.innerHTML = selectedServiceList.map(service => `
+                        <div class="flex justify-between items-center">
+                            <span>${service.name}</span>
+                            <span class="font-semibold">$${service.price.toLocaleString()}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+            
+            function updateTotalPrice() {
+                totalPrice.textContent = `$${currentTotal.toLocaleString()}`;
+                
+                // Animate price change
+                anime({
+                    targets: totalPrice,
+                    scale: [1, 1.1, 1],
+                    duration: 300,
+                    easing: 'easeInOutQuart'
+                });
+            }
+        }
+
+        function initCaseStudiesSlider() {
+            new Splide('#case-studies-slider', {
+                type: 'loop',
+                perPage: 3,
+                perMove: 1,
+                gap: '2rem',
+                autoplay: true,
+                interval: 5000,
+                breakpoints: {
+                    1024: {
+                        perPage: 2,
+                    },
+                    768: {
+                        perPage: 1,
+                    }
+                }
+            }).mount();
+        }
+
+        function initServiceModals() {
+            const serviceCards = document.querySelectorAll('.service-card');
+            
+            serviceCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const serviceType = card.dataset.service;
+                    if (services[serviceType]) {
+                        showServiceModal(services[serviceType]);
+                    }
+                });
+            });
+        }
+
+        function showServiceModal(service) {
+            const modalContent = document.getElementById('service-modal-content');
+            modalContent.innerHTML = `
+                <h2 class="font-display text-4xl font-bold mb-6">${service.title}</h2>
+                <p class="text-gray-600 text-lg mb-8">${service.description}</p>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="font-display text-2xl font-bold mb-4">Key Features</h3>
+                        <ul class="space-y-2">
+                            ${service.features.map(feature => `
+                                <li class="flex items-center">
+                                    <svg class="w-5 h-5 text-sage mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    ${feature}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-display text-2xl font-bold mb-4">Our Process</h3>
+                        <ol class="space-y-2">
+                            ${service.process.map((step, index) => `
+                                <li class="flex items-start">
+                                    <span class="bg-sage text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">
+                                        ${index + 1}
+                                    </span>
+                                    ${step}
+                                </li>
+                            `).join('')}
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center bg-gray-50 rounded-lg p-6">
+                    <div>
+                        <div class="text-sm text-gray-600">Timeline</div>
+                        <div class="font-semibold">${service.timeline}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-600">Starting Price</div>
+                        <div class="text-3xl font-bold text-sage">${service.price}</div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 flex gap-4">
+                    <button class="flex-1 bg-sage text-white py-3 rounded-lg font-semibold hover:bg-sage/90 transition-colors">
+                        Get Started
+                    </button>
+                    <button class="flex-1 border-2 border-sage text-sage py-3 rounded-lg font-semibold hover:bg-sage hover:text-white transition-colors">
+                        Schedule Call
+                    </button>
+                </div>
+            `;
+            
+            document.querySelector('[data-modal="service-detail"]').classList.add('active');
+        }
+
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+        }
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>
